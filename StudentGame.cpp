@@ -5,9 +5,10 @@
 #include <iostream>
 #include <random>
 
-/**
- * Constructor will create the ships vector and add ships to it.
- */
+
+/*************************************************************************
+ * The Constructor that will create the ships vector and add ships to it.
+ *************************************************************************/
 Game::Game(){
 }
 

@@ -26,7 +26,7 @@ class Board {
 
 		void setVisible(bool v);
 
-		/*Board Internal is a int* */
+		/*Board Internal is a (int*) */
 		class Internal {
 			public:
 
@@ -34,13 +34,13 @@ class Board {
 				_grid = _g;
 			}
 
-			/**In the Internal class */
+			/**In the Internal class. Used to get address of column */
 			int& operator[](int index);
 
 			private:
 				int* _grid;
 		};
-		/**In the Board class */
+		/**In the Board class. Used to get address of row.*/
 		Internal operator[](int index);
 
 	private:

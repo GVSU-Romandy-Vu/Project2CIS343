@@ -41,7 +41,8 @@ bool Game::place(const int& x, const int& y, Direction d, const Ship& s, Board& 
 }
 
 /**
- * Call human turn/computer turn until someone wins.
+ * @brief 
+ * 
  */
 void Game::run(){
 }

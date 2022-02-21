@@ -6,6 +6,7 @@
 #include <random>
 
 
+
 /*************************************************************************
  * The Constructor that will create the ships vector and add ships to it.
  *************************************************************************/
@@ -16,6 +17,8 @@ Game::Game(){
  * Begin Game let's user and then computer setup boards then calls run()
  */
 void Game::beginGame(){
+	std::cout<<"";
+	
 }
 
 /**

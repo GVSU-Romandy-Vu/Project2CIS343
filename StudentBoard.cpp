@@ -20,8 +20,8 @@ Board::Board(const Board& other){
 
     this->grid = new int[WIDTH * HEIGHT];
 
-    for (int i = 0; i < WIDTH; i++){
-        for (int j = 0; j < HEIGHT; j++){
+    for (int i = 0; i < HEIGHT; i++){
+        for (int j = 0; j < WIDTH; j++){
             this->grid[(i * 10) + j] = other.grid[(i * 10) + j];
         }
     }
@@ -80,12 +80,52 @@ Board::Internal Board::operator[](int index){
 }
 
 /**Print out the board data*/
+
 std::ostream& operator<<(std::ostream& os, Board const& b){
+    char ch;
+    Board data = b;
+
+    for (int row = 0; row < HEIGHT; row++){
+        std::cout<<"\t"<<row;
+    }
+    std::cout<<std::endl;
+
+    std::cout<<"\t-----------------------------------------"<<std::endl;
+    for (int row = 0; row < HEIGHT; row++){
+        
+        std::cout<<row<<"|\t";
+        
+        for (int col = 0; col < WIDTH; col++){
+            ch = data[row][col];
+            if(!data.visible && (ch == CARRIER || ch == BATTLESHIP || ch == DESTROYER || ch == SUBMARINE || ch == PATROLBOAT)){
+                ch = EMPTY;
+            }
+            std::cout<<ch<<"\t";
+        }
+
+        std::cout<<std::endl;
+
+    }
+    
+    
 }
 
 int Board::count() const{
+    Board data = *this;
+    int hits = 0;
+    
+    for(int row = 0; row < WIDTH; row++){
+        for(int col = 0; col < HEIGHT; col++){
+            if(data[row][col] == HIT){
+                ++hits;
+            }
+        }
+    }
+
+    return hits;
     
 }
 
 bool Board::operator< (const Board& other){
+    return this->count() < other.count(); 
 }

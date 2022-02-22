@@ -5,20 +5,28 @@
 #include <iostream>
 #include <random>
 
+//Included:
+#include <vector>
+#include <string>
+
 
 
 /*************************************************************************
  * The Constructor that will create the ships vector and add ships to it.
  *************************************************************************/
 Game::Game(){
+	player = Board();
+	computer = Board();
 }
 
 /**
  * Begin Game let's user and then computer setup boards then calls run()
  */
 void Game::beginGame(){
-	std::cout<<"";
-	
+	hello();
+	placeShipsPC();
+	placeShips();
+	run();
 }
 
 /**
@@ -38,19 +46,87 @@ void Game::placeShipsPC(){
  * at a particular spot with a particular direction.
  */
 bool Game::place(const int& x, const int& y, Direction d, const Ship& s, Board& b){
+	
+	bool prompt = true;
+
+	if (&b == &computer){
+		prompt = false;
+	}
 }
 
-/**
- * @brief 
- * 
- */
+
 void Game::run(){
+	while (!(computer.count() == 17)){
+		humanTurn();
+
+		if(player.count() == 17){
+			std::cout<<"You win!"<<std::endl;
+			break;
+		}
+
+		computerTurn();
+
+		
+		if (computer < player){
+			std::cout<<"The computer is winning!"<<std::endl;
+		}
+		else{
+			std::cout<<"You are winning!"<<std::endl;
+		}
+	}
+
+	if(computer.count() == 17){
+		std::cout<<"The computer wins!"<<std::endl;
+	}
 }
 
 void Game::humanTurn(){
+	bool valid = false;
+	std::string row_data;
+	std::string col_data;
+	bool row_valid;
+	bool col_valid;
+
+	while (!valid){
+		row_valid = false;
+		col_valid = false;
+
+		std::cout<<"Enter Row coordinate to attack: \n"<<std::endl;
+		std::cin>>row_data;
+		std::cout<<"Enter Column coordinate to attack: \n"<<std::endl;
+		std::cin>>col_data;
+
+		if (row_data.length() == 1 && isdigit(row_data[0])){
+			row_valid = true;
+		}
+		if(col_data.length() == 1 && isdigit(col_data[0])){
+			col_valid = true;
+		}
+
+		if (row_valid && col_valid){
+			int row = std::stoi(row_data);
+			int col = std::stoi(col_data);
+			
+			int result = computer[row][col];
+		}
+
+
+
+	}
 }
 
 void Game::computerTurn(){
+}
+
+void Game::hello(){
+	std::cout<<"\tWELCOME TO BATTLESHIP"<<std::endl;
+
+	std::cout<<"Begin by placing your ships, the pieces:\n"<<std::endl;
+	std::cout<<"\tCarrier [5 spaces]"<<std::endl;
+	std::cout<<"\tBattleship [4 spaces]"<<std::endl;
+	std::cout<<"\tDestroyer [3 spaces]"<<std::endl;
+	std::cout<<"\tSubmariner [3 spaces]"<<std::endl;
+	std::cout<<"\tPatrol Boat [2 spaces]\n"<<std::endl;
 }
 
 /**
@@ -59,7 +135,8 @@ void Game::computerTurn(){
 int main(int argc, char** argv){
 	(void)argc;
 	(void)argv;
-	Game g;
+	//Added constructor "= Game()"
+	Game g = Game();
 	g.beginGame();
 
 	return 0;

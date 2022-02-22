@@ -5,10 +5,10 @@
  * character:
  * 
  * EMPTY = 'C'
- * BATTLESHIP ='D'
+ * BATTLESHIP ='B'
+ * DESTROYER = "D"
  * SUBMARINE = 'S'
  * PATROLBOAT = 'P'
- * Cruiser not available
  * MISS = '_'
  * HIT = '*'
  *************************************************/

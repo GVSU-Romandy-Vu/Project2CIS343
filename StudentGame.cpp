@@ -17,6 +17,11 @@
 Game::Game(){
 	player = Board();
 	computer = Board();
+	ships.insert(Ship(5, "CARRIER", 'C', ));
+	ships.insert(Ship(4, "BATTLESHIP", 'B'));
+	ships.insert(Ship(3, "DESTROYER", 'D'));
+	ships.insert(Ship(3, "SUBMARINE", "S"));
+	ships.insert(Ship(2,"PATROL BOAT", P));
 }
 
 /**
@@ -33,12 +38,47 @@ void Game::beginGame(){
  * Handle the human placing ships.
  */
 void Game::placeShips(){
+	std::cout<<"Enter "
 }
 
 /**
  * Handle the computer placing ships.
  */
 void Game::placeShipsPC(){
+	int x;
+	int y;
+	Direction direction;
+	Ship current;
+	std::default_random_engine generator;
+	std::uniform_int_distribution<int> (distribution(0,WIDTH));
+	while(!ships.empty()){
+		current = ships.front();
+		x = distribution(generator);
+		y = distribution(generator);
+		direction = (x + y) % 2;
+		
+		if(0 == direction){
+			while (x + current.getSpaces() >= WIDTH){
+				x = distribution(generator);
+			}
+		}
+		if(1 == direction){
+			while (y + current.getSpaces() >= HEIGHT){
+				y = distribution(generator);
+			}
+		}
+
+		if(place(x,y,direction, current, computer)){
+			ships.erase(0);
+			std::cout<<current.getName()<<" Has been removed"<<endl;
+		}
+	}
+
+	ships.insert(Ship(5, "CARRIER", 'C', ));
+	ships.insert(Ship(4, "BATTLESHIP", 'B'));
+	ships.insert(Ship(3, "DESTROYER", 'D'));
+	ships.insert(Ship(3, "SUBMARINE", "S"));
+	ships.insert(Ship(2,"PATROL BOAT", P));
 }
 
 /**
@@ -52,6 +92,8 @@ bool Game::place(const int& x, const int& y, Direction d, const Ship& s, Board& 
 	if (&b == &computer){
 		prompt = false;
 	}
+
+	
 }
 
 

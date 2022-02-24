@@ -57,7 +57,10 @@ void Board::setVisible(bool v){
 AKA: Internal[][] */
 
 int& Board::Internal::operator[](int index){
-    return this->_grid[index];
+    if(index >= WIDTH){
+        throw std::out_of_range(std::to_string(index) + is greater than or equal to width of std::to_string(WIDTH));
+    }
+    return _grid[index];
 }
 
 /*No known return type.
@@ -65,11 +68,11 @@ Internal[]
 */
 
 Board::Internal Board::operator[](int index){
-    int* row_point = &grid[10 * index];
-    Internal copy = Internal(row_point);
-    //Return type is Internal
-    //In the Board class
-    return copy;
+    if(index >= HEIGHT){
+        throw std::out_of_range(std::to_string(index) + " is greater than or equal to grid height of " + std::to_string(HEIGHT));
+    }
+        return Board::Internal(grid+(index * WIDTH));
+    
     
     /*First: Defined in Board class. Second: Defined in Internal class
     Board x = Board();

@@ -35,7 +35,66 @@ void Game::beginGame(){
  * Handle the human placing ships.
  */
 void Game::placeShips(){
-	std::cout<<"Enter ";
+	
+	bool valid = false;
+	std::string row_data;
+	std::string col_data;
+	std::string dir_data;
+	bool row_valid;
+	bool col_valid;
+	bool dir_valid;
+	Direction d;
+
+	while (!ships.empty()){
+		Ship current = ships.front();
+		std::cout<<"Enter coordinates for "<<current<<std::endl;
+		valid = false;
+		while (!valid){
+			row_valid = false;
+			col_valid = false;
+			dir_valid = false;
+
+			std::cout<<"Enter Row number: \n"<<std::endl;
+			std::cin>>row_data;
+			std::cout<<"Enter Column number: \n"<<std::endl;
+			std::cin>>col_data;
+			std::cout<<"Enter direction (0 for horizontal, 1 for Vertical)\n"<<std::endl;
+			std::cin>>dir_data;
+
+
+			if (row_data.length() == 1 && isdigit(row_data[0])){
+				row_valid = true;
+			}
+			if(col_data.length() == 1 && isdigit(col_data[0])){
+				col_valid = true;
+			}
+			if("0" == dir_data || "1" == dir_data){
+				dir_valid = true;
+				if("0" == dir_data){
+					d = HORIZONTAL;
+
+				}
+				else{
+					d = VERTICAL;
+				}
+			}
+
+			if (row_valid && col_valid && dir_valid){
+				valid = true;
+				if(place(std::stoi(row_data), std::stoi(col_data), d, current, player)){
+					ships.erase(ships.begin());
+				}
+
+			}
+
+			if(!valid){
+				std::cout<<"Invalid coordinates: both coordinates not 0-9 or direction not 0 or 1. \n"<<std::endl;
+			}
+			
+
+
+		}
+	}
 }
 
 /**
@@ -61,15 +120,9 @@ void Game::placeShipsPC(){
 			direction = VERTICAL;
 		}
 		
-		if(0 == direction){
-			while (x + current.getSpaces() >= WIDTH){
-				x = distribution(generator);
-			}
-		}
-		if(1 == direction){
-			while (y + current.getSpaces() >= HEIGHT){
-				y = distribution(generator);
-			}
+		while(x + current.getSpaces() >= WIDTH || y + current.getSpaces() >= HEIGHT){
+			x = distribution(generator);
+			y = distribution(generator);
 		}
 
 		if(place(x,y,direction, current, computer)){
@@ -164,6 +217,7 @@ void Game::humanTurn(){
 	bool col_valid;
 
 	while (!valid){
+		std::cout<<"Your board:\n"<<player<<"\n Computer board:\n"<<computer<<std::endl;
 		row_valid = false;
 		col_valid = false;
 
@@ -180,14 +234,27 @@ void Game::humanTurn(){
 		}
 
 		if (row_valid && col_valid){
+			valid = true;
 			int row = std::stoi(row_data);
 			int col = std::stoi(col_data);
 			
 			int result = computer[row][col];
+
+			for (Ship ship: ships){
+				if(ship.getChr() == result){
+					ship.addHit();
+					std::cout<<"You hit a ship!\n"<<std::endl;
+				}
+			}
+			if(MISS == result){
+				std::cout<<"You missed.\n"<<std::endl;
+			}
+			computer[row][col] == HIT;
 		}
 
-
-
+		if(!valid){
+			std::cout<<"Invalid coordinates, try again.\n"<<std::endl;
+		}
 	}
 }
 

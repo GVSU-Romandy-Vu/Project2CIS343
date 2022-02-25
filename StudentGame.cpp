@@ -17,11 +17,8 @@
 Game::Game(){
 	player = Board();
 	computer = Board();
-	ships.insert(Ship(5, "CARRIER", 'C', ));
-	ships.insert(Ship(4, "BATTLESHIP", 'B'));
-	ships.insert(Ship(3, "DESTROYER", 'D'));
-	ships.insert(Ship(3, "SUBMARINE", "S"));
-	ships.insert(Ship(2,"PATROL BOAT", P));
+	ships = {Ship(5, "CARRIER", 'C'), Ship(4, "BATTLESHIP", 'B'), Ship(3, "DESTROYER", 'D'),
+	 Ship(3, "SUBMARINE", 'S'), Ship(2,"PATROL BOAT", 'P')};
 }
 
 /**
@@ -38,7 +35,7 @@ void Game::beginGame(){
  * Handle the human placing ships.
  */
 void Game::placeShips(){
-	std::cout<<"Enter "
+	std::cout<<"Enter ";
 }
 
 /**
@@ -48,14 +45,21 @@ void Game::placeShipsPC(){
 	int x;
 	int y;
 	Direction direction;
-	Ship current;
+	int calcDir;
 	std::default_random_engine generator;
-	std::uniform_int_distribution<int> (distribution(0,WIDTH));
+	std::uniform_int_distribution<int> distribution(0,WIDTH);
 	while(!ships.empty()){
-		current = ships.front();
+		Ship current = ships.front();
 		x = distribution(generator);
 		y = distribution(generator);
-		direction = (x + y) % 2;
+		int calcDir = (x + y) % 2;
+
+		if(0 == calcDir){
+			direction = HORIZONTAL;
+		}
+		else{
+			direction = VERTICAL;
+		}
 		
 		if(0 == direction){
 			while (x + current.getSpaces() >= WIDTH){
@@ -69,16 +73,13 @@ void Game::placeShipsPC(){
 		}
 
 		if(place(x,y,direction, current, computer)){
-			ships.erase(0);
-			std::cout<<current.getName()<<" Has been removed"<<endl;
+			ships.erase(ships.begin());
+			std::cout<<current.getName()<<" Has been removed"<<std::endl;
 		}
 	}
+	ships = {Ship(5, "CARRIER", 'C'), Ship(4, "BATTLESHIP", 'B'), Ship(3, "DESTROYER", 'D'),
+	 Ship(3, "SUBMARINE", 'S'), Ship(2,"PATROL BOAT", 'P')};
 
-	ships.insert(Ship(5, "CARRIER", 'C', ));
-	ships.insert(Ship(4, "BATTLESHIP", 'B'));
-	ships.insert(Ship(3, "DESTROYER", 'D'));
-	ships.insert(Ship(3, "SUBMARINE", "S"));
-	ships.insert(Ship(2,"PATROL BOAT", P));
 }
 
 /**
@@ -86,14 +87,47 @@ void Game::placeShipsPC(){
  * at a particular spot with a particular direction.
  */
 bool Game::place(const int& x, const int& y, Direction d, const Ship& s, Board& b){
-	
 	bool prompt = true;
-
 	if (&b == &computer){
-		prompt = false;
+			prompt = false;
 	}
+	try{
+		if (HORIZONTAL == d){
+			for(int i = x; i < WIDTH; i++){
+				if(EMPTY != b[i][y]){
+					throw std::invalid_argument("");
+				}
+			}
+			for(int i = x; i < WIDTH; i++){
+				b[i][y] == s.getChr();
+			}
+		}
+		else{
+			for(int i = y; i < HEIGHT; i++){
+				if(EMPTY != b[x][i]){
+					throw std::invalid_argument("");
+				}
+			}
 
-	
+			for(int i = y; i < HEIGHT; i++){
+				b[x][i] == s.getChr();
+			}
+		}
+		return true;
+	}
+	catch(std::out_of_range& e){
+		if(prompt){
+			std::cout<<"Invalid coordinates: Coordinates out of range."<<std::endl;
+			
+		}
+		return false;
+	}
+	catch(std::invalid_argument& a){
+		if(prompt){
+			std::cout<<"Invalid coordinates: Placement of ship overlaps with another."<<std::endl;
+		}
+		return false;
+	}
 }
 
 

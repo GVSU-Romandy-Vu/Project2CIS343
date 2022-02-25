@@ -58,7 +58,7 @@ AKA: Internal[][] */
 
 int& Board::Internal::operator[](int index){
     if(index >= WIDTH){
-        throw std::out_of_range(std::to_string(index) + is greater than or equal to width of std::to_string(WIDTH));
+        throw std::out_of_range(std::to_string(index) + " is greater than or equal to width of " + std::to_string(WIDTH));
     }
     return _grid[index];
 }

@@ -39,7 +39,7 @@ Board& Board::operator=(const Board& other){
     this->grid = other.grid;
     return *this; */
     for(int i = 0; i < WIDTH * HEIGHT; i++){
-    	grid[i] == other.grid[i];
+    	grid[i] = other.grid[i];
     }
 	    
    return *this;
@@ -93,7 +93,7 @@ std::ostream& operator<<(std::ostream& os, Board const& b){
     }
     std::cout<<std::endl;
 
-    std::cout<<"\t-----------------------------------------"<<std::endl;
+    std::cout<<"\t---------------------------------------------------------------------------------"<<std::endl;
     for (int row = 0; row < HEIGHT; row++){
         
         std::cout<<row<<"|\t";
@@ -101,7 +101,7 @@ std::ostream& operator<<(std::ostream& os, Board const& b){
         for (int col = 0; col < WIDTH; col++){
             ch = data[row][col];
             if(!data.visible && (ch == CARRIER || ch == BATTLESHIP || ch == DESTROYER || ch == SUBMARINE || ch == PATROLBOAT)){
-               // ch = EMPTY;
+                //ch = EMPTY;
             }
             std::cout<<ch<<"\t";
         }
@@ -120,7 +120,7 @@ int Board::count() const{
     for(int row = 0; row < WIDTH; row++){
         for(int col = 0; col < HEIGHT; col++){
             if(data[row][col] == HIT){
-                ++hits;
+                hits++;
             }
         }
     }

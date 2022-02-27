@@ -47,6 +47,7 @@ void Game::placeShips(){
 	Direction d;
 
 	while (!ships.empty()){
+		std::cout<<player<<std::endl;
 		Ship current = ships.front();
 		std::cout<<"Enter coordinates for "<<current<<std::endl;
 		valid = false;
@@ -94,6 +95,9 @@ void Game::placeShips(){
 		}
 	
 	}
+	ships = {Ship(5, "CARRIER", 'C'), Ship(4, "BATTLESHIP", 'B'), Ship(3, "DESTROYER", 'D'),
+         Ship(3, "SUBMARINE", 'S'), Ship(2,"PATROL BOAT", 'P')};
+
 
 
 }
@@ -129,14 +133,11 @@ void Game::placeShipsPC(){
 
 		if(place(x,y,direction, current, computer)){
 			ships.erase(ships.begin());
-			std::cout<<current.getName()<<" Has been removed"<<std::endl;
 		}
 	}
 	
 	ships = {Ship(5, "CARRIER", 'C'), Ship(4, "BATTLESHIP", 'B'), Ship(3, "DESTROYER", 'D'),
 	 Ship(3, "SUBMARINE", 'S'), Ship(2,"PATROL BOAT", 'P')};
-
-	std::cout<<computer<<std::endl;
 
 }
 
@@ -146,22 +147,13 @@ void Game::placeShipsPC(){
  */
 bool Game::place(const int& x, const int& y, Direction d, const Ship& s, Board& b){
 	bool prompt = true;
-	std::cout<<"Computer reference: " <<&computer<<std::endl;
-	std::cout<<"Player reference: " <<&player<<std::endl;
-	std::cout<<"b reference: "<<&b<<std::endl;
-	std::cout<<"Placing in ["<<x<<"]["<<y<<"] at direction "<<d<<std::endl;
-	/*if (&b == &computer){
+	if (&b == &computer){
 			prompt = false;
-	} */
+	}
 	try{
 		if (HORIZONTAL == d){
 			for(int i = y;  i < y + s.getSpaces(); i++){
 				if(EMPTY != b[x][i]){
-					std::cout<<"Value: "<<b[i][y]<<std::endl;
-					std::cout<<"Problem:In Horizontal"<<std::endl;
-					std::cout<<"Reference of b[x][i] "<<&b[x][i]<<std::endl;
-					std::cout<<"Reference of com[x][i]"<<&computer[x][i]<<std::endl;
-					std::cout<<"Reference of p[][]"<<&player[x][i]<<std::endl;
 					throw std::invalid_argument("");
 				}
 			}
@@ -172,11 +164,6 @@ bool Game::place(const int& x, const int& y, Direction d, const Ship& s, Board& 
 		else{
 			for(int i = y; i < y + s.getSpaces(); i++){
 				if(EMPTY != b[i][y]){
-					std::cout<<"Value: "<<b[i][y]<<std::endl;
-					std::cout<<"Problem: In Vertical"<<std::endl;
-					std::cout<<"Reference of b[][] "<<&b[i][y]<<std::endl;
-                                        std::cout<<"Reference of com[][]"<<&computer[i][y]<<std::endl;
-                                        std::cout<<"Reference of p[][]"<<&player[i][y]<<std::endl;
 
 					throw std::invalid_argument("");
 				}
@@ -209,7 +196,7 @@ void Game::run(){
 		humanTurn();
 
 		if(player.count() == 17){
-			std::cout<<"You win!"<<std::endl;
+			std::cout<<"You lose."<<std::endl;
 			break;
 		}
 
@@ -225,7 +212,7 @@ void Game::run(){
 	}
 
 	if(computer.count() == 17){
-		std::cout<<"The computer wins!"<<std::endl;
+		std::cout<<"You win"<<std::endl;
 	}
 }
 
@@ -235,52 +222,71 @@ void Game::humanTurn(){
 	std::string col_data;
 	bool row_valid;
 	bool col_valid;
+	try{
+		while (!valid){
+			std::cout<<"Your board:\n"<<player<<"\n Computer board:\n"<<computer<<std::endl;
+			row_valid = false;
+			col_valid = false;
 
-	while (!valid){
-		std::cout<<"Your board:\n"<<player<<"\n Computer board:\n"<<computer<<std::endl;
-		row_valid = false;
-		col_valid = false;
+			std::cout<<"Enter Row coordinate to attack:"<<std::endl;
+			std::cin>>row_data;
+			std::cout<<"Enter Column coordinate to attack:"<<std::endl;
+			std::cin>>col_data;
 
-		std::cout<<"Enter Row coordinate to attack: \n"<<std::endl;
-		std::cin>>row_data;
-		std::cout<<"Enter Column coordinate to attack: \n"<<std::endl;
-		std::cin>>col_data;
+			if (row_data.length() == 1 && isdigit(row_data[0])){
+				row_valid = true;
+			}
+			if(col_data.length() == 1 && isdigit(col_data[0])){
+				col_valid = true;
+			}
 
-		if (row_data.length() == 1 && isdigit(row_data[0])){
-			row_valid = true;
-		}
-		if(col_data.length() == 1 && isdigit(col_data[0])){
-			col_valid = true;
-		}
-
-		if (row_valid && col_valid){
-			valid = true;
-			int row = std::stoi(row_data);
-			int col = std::stoi(col_data);
+			if (row_valid && col_valid){
+				valid = true;
+				int row = std::stoi(row_data);
+				int col = std::stoi(col_data);
 			
-			int result = computer[row][col];
+				int result = computer[row][col];
 
-			for (Ship ship: ships){
-				if(ship.getChr() == result){
-					ship.addHit();
-					std::cout<<"You hit a ship!\n"<<std::endl;
+				for (Ship ship: ships){
+					if(ship.getChr() == result){
+						std::cout<<"You hit a ship!\n"<<std::endl;
+						ship.addHit();
+						computer[row][col] = HIT;
+						std::cout<<"ship size: "<<ship.getSpaces()<<" Ship hits "<<ship.getHits()<<std::endl;
+						if(ship.getSpaces() == ship.getHits()){
+							std::cout<<"You sunk a "<<ship.getName()<<std::endl;
+						}
+					}
 				}
-			}
-			if(MISS == result){
-				std::cout<<"You missed.\n"<<std::endl;
-			}
-			computer[row][col] == HIT;
-		}
+				if(EMPTY == result){
+					std::cout<<"You missed."<<std::endl;
+					computer[row][col] = MISS;
+				}
+				else if (HIT == result || MISS == result){
+					std::cout<<"You already enter that spot, but you lost your turn."<<std::endl;
+				}
 
-		if(!valid){
+			}
+
+			if(!valid){
 			std::cout<<"Invalid coordinates, try again.\n"<<std::endl;
+			}
 		}
+		std::cout<<"Did not caught ship exception"<<std::endl;
+	}
+	catch(std::out_of_range& e){
+		std::cerr<<e.what()<<std::endl;
+		humanTurn();
+	}
+	catch(SunkShipException& w){
+		std::cout<<"Caught ship exception"<<std::endl;
+		std::cerr<<w.what()<<std::endl;
 	}
 }
 
 void Game::computerTurn(){
 	std::default_random_engine generator;
-	std::uniform_int_distribution<int> distribution(0, WIDTH);
+	std::uniform_int_distribution<int> distribution(0, WIDTH - 1);
 	int x;
 	int y;
 	bool valid = false;
@@ -290,7 +296,7 @@ void Game::computerTurn(){
 		y = distribution(generator);
 		target = player[x][y];
 
-	} while( HIT != target || MISS != target);
+	} while( MISS == target ||  HIT == target);
 
 	if(EMPTY == target){
 		player[x][y] = MISS;
@@ -320,8 +326,7 @@ void Game::hello(){
 int main(int argc, char** argv){
 	(void)argc;
 	(void)argv;
-	//Added constructor "= Game()"
-	Game g = Game();
+	Game g;
 	g.beginGame();
 
 	return 0;

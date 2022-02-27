@@ -35,9 +35,14 @@ Board& Board::operator=(const Board& other){
 
     this->visible = other.visible;
 
-    //Might not work
+    /*Might not work
     this->grid = other.grid;
-    return *this;
+    return *this; */
+    for(int i = 0; i < WIDTH * HEIGHT; i++){
+    	grid[i] == other.grid[i];
+    }
+	    
+   return *this;
 
 }
 
@@ -96,7 +101,7 @@ std::ostream& operator<<(std::ostream& os, Board const& b){
         for (int col = 0; col < WIDTH; col++){
             ch = data[row][col];
             if(!data.visible && (ch == CARRIER || ch == BATTLESHIP || ch == DESTROYER || ch == SUBMARINE || ch == PATROLBOAT)){
-                ch = EMPTY;
+               // ch = EMPTY;
             }
             std::cout<<ch<<"\t";
         }

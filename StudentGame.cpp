@@ -16,6 +16,7 @@
  *************************************************************************/
 Game::Game(){
 	player = Board();
+	player.setVisible(true);
 	computer = Board();
 	ships = {Ship(5, "CARRIER", 'C'), Ship(4, "BATTLESHIP", 'B'), Ship(3, "DESTROYER", 'D'),
 	 Ship(3, "SUBMARINE", 'S'), Ship(2,"PATROL BOAT", 'P')};
@@ -135,6 +136,8 @@ void Game::placeShipsPC(){
 	ships = {Ship(5, "CARRIER", 'C'), Ship(4, "BATTLESHIP", 'B'), Ship(3, "DESTROYER", 'D'),
 	 Ship(3, "SUBMARINE", 'S'), Ship(2,"PATROL BOAT", 'P')};
 
+	std::cout<<computer<<std::endl;
+
 }
 
 /**
@@ -143,29 +146,44 @@ void Game::placeShipsPC(){
  */
 bool Game::place(const int& x, const int& y, Direction d, const Ship& s, Board& b){
 	bool prompt = true;
-	if (&b == &computer){
+	std::cout<<"Computer reference: " <<&computer<<std::endl;
+	std::cout<<"Player reference: " <<&player<<std::endl;
+	std::cout<<"b reference: "<<&b<<std::endl;
+	std::cout<<"Placing in ["<<x<<"]["<<y<<"] at direction "<<d<<std::endl;
+	/*if (&b == &computer){
 			prompt = false;
-	}
+	} */
 	try{
 		if (HORIZONTAL == d){
-			for(int i = x; i < WIDTH; i++){
-				if(EMPTY != b[i][y]){
+			for(int i = y;  i < y + s.getSpaces(); i++){
+				if(EMPTY != b[x][i]){
+					std::cout<<"Value: "<<b[i][y]<<std::endl;
+					std::cout<<"Problem:In Horizontal"<<std::endl;
+					std::cout<<"Reference of b[x][i] "<<&b[x][i]<<std::endl;
+					std::cout<<"Reference of com[x][i]"<<&computer[x][i]<<std::endl;
+					std::cout<<"Reference of p[][]"<<&player[x][i]<<std::endl;
 					throw std::invalid_argument("");
 				}
 			}
-			for(int i = x; i < WIDTH; i++){
-				b[i][y] == s.getChr();
+			for(int i = y; i < y + s.getSpaces(); i++){
+				b[x][i] = s.getChr();
 			}
 		}
 		else{
-			for(int i = y; i < HEIGHT; i++){
-				if(EMPTY != b[x][i]){
+			for(int i = y; i < y + s.getSpaces(); i++){
+				if(EMPTY != b[i][y]){
+					std::cout<<"Value: "<<b[i][y]<<std::endl;
+					std::cout<<"Problem: In Vertical"<<std::endl;
+					std::cout<<"Reference of b[][] "<<&b[i][y]<<std::endl;
+                                        std::cout<<"Reference of com[][]"<<&computer[i][y]<<std::endl;
+                                        std::cout<<"Reference of p[][]"<<&player[i][y]<<std::endl;
+
 					throw std::invalid_argument("");
 				}
 			}
 
-			for(int i = y; i < HEIGHT; i++){
-				b[x][i] == s.getChr();
+			for(int i = x; i < x + s.getSpaces(); i++){
+				b[i][y] = s.getChr();
 			}
 		}
 		return true;

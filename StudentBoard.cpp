@@ -3,21 +3,29 @@
 #include <algorithm>
 #include <iostream>
 
+/*************************************************************
+* @author Romandy Vu
+*************************************************************/
 
 //keyword "new" always returns a pointer (dynamically created)
 //symbol "::" signifies where function is defined
 //DO NOT CREATE A REFERENCE INSIDE A FUNCTION
 
 Board::Board(){
+    //allocate memory for grid (grid is a pointer).
     grid = new int[WIDTH * HEIGHT];
+    
+    //set visibilty to false.
     visible = false;
 }
 
 Board::Board(const Board& other){
 
-    
+    //Copy data from source.
     this->visible = other.visible;
 
+    /*Initalize new memory so it is a deep copy
+    *instead of shallow */
     this->grid = new int[WIDTH * HEIGHT];
 
     for (int i = 0; i < HEIGHT; i++){
@@ -38,6 +46,8 @@ Board& Board::operator=(const Board& other){
     /*Might not work
     this->grid = other.grid;
     return *this; */
+
+    //Copy each index from source.
     for(int i = 0; i < WIDTH * HEIGHT; i++){
     	grid[i] = other.grid[i];
     }
@@ -53,56 +63,56 @@ Board::~Board(){
 void Board::setVisible(bool v){
     this->visible = v;
 }
-/*Return the reference of an int from the index operation.
-AKA: Internal[][] */
 
 int& Board::Internal::operator[](int index){
+    //Size check.
     if(index >= WIDTH){
         throw std::out_of_range(std::to_string(index) + " is greater than or equal to width of " + std::to_string(WIDTH));
     }
     return _grid[index];
 }
 
-/*No known return type.
-Internal[]
-*/
-
 Board::Internal Board::operator[](int index){
+    //Index check.
     if(index >= HEIGHT){
         throw std::out_of_range(std::to_string(index) + " is greater than or equal to grid height of " + std::to_string(HEIGHT));
     }
         return Board::Internal(grid+(index * WIDTH));
-    
-    
-    /*First: Defined in Board class. Second: Defined in Internal class
-    Board x = Board();
-    x[0][1];
-    x[0];
-    x[0][1][2];
-    */
 }
 
 /**Print out the board data*/
 
 std::ostream& operator<<(std::ostream& os, Board const& b){
+    //Used to display value of grid coordinate.
     char ch;
+
+    /*Use a copy operator to get index value from b.
+    Cannot access certain b values since b is a constant
+    and no operation defined to get index value.*/ 
     Board data = b;
 
+    //Print row labels.
     for (int row = 0; row < HEIGHT; row++){
         std::cout<<"\t"<<row;
     }
     std::cout<<std::endl;
 
+    //Print row border.
     std::cout<<"\t---------------------------------------------------------------------------------"<<std::endl;
     for (int row = 0; row < HEIGHT; row++){
         
+        //Print column labels and border.
         std::cout<<row<<"|\t";
         
+        //Prints grid coordinate of board.
         for (int col = 0; col < WIDTH; col++){
             ch = data[row][col];
+
+            //Used to hide ship location of computer.
             if(!data.visible && (ch == CARRIER || ch == BATTLESHIP || ch == DESTROYER || ch == SUBMARINE || ch == PATROLBOAT)){
                 //ch = EMPTY;
             }
+            //Print value of grid coordinates, unless hidden.
             std::cout<<ch<<"\t";
         }
 
@@ -114,9 +124,13 @@ std::ostream& operator<<(std::ostream& os, Board const& b){
 }
 
 int Board::count() const{
+    //Helpful to retrieve values of Board.
     Board data = *this;
+
+    //Return value.
     int hits = 0;
     
+    //Checks each coordinate if it is HIT and increment it.
     for(int row = 0; row < WIDTH; row++){
         for(int col = 0; col < HEIGHT; col++){
             if(data[row][col] == HIT){
@@ -130,5 +144,6 @@ int Board::count() const{
 }
 
 bool Board::operator< (const Board& other){
+    //If less than, the variable holding "this" is winning.
     return this->count() < other.count(); 
 }

@@ -11,6 +11,8 @@
  * PATROLBOAT = 'P'
  * MISS = '_'
  * HIT = '*'
+ * 
+ * @author + Romandy Vu (for commenting)
  *************************************************/
 enum BoardValues {
 	//No cruiser

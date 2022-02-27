@@ -8,6 +8,7 @@
  * the command line augments will place the ship horizontally
  * and 1 will place the ship vertically.
  * 
+ * @author + Romandy Vu (for commenting)
  **********************************************************/
 enum Direction {
 	HORIZONTAL, VERTICAL

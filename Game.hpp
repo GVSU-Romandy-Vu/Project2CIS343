@@ -9,6 +9,8 @@
 /**********************************************************************************
  * 
  * Interface for StudentGame
+ * 
+ * @author + Romandy Vu (for commenting)
  **********************************************************************************/
 class Game {
 	public:
@@ -79,6 +81,8 @@ class Game {
 		/**The board of the computer to place ships and the player to place hits.*/
 		Board computer;
 
+		/**A list to store the different ships, used to help place ships for computer
+		 * and player, and for prompting message if player sunk a ship.*/
 		std::vector<Ship> ships;
 };
 

@@ -25,11 +25,6 @@ Board::Board(const Board& other){
             this->grid[(i * 10) + j] = other.grid[(i * 10) + j];
         }
     }
-    /*Maybe test this out
-    for (int i = 0; i < WIDTH * HEIGHT; i++){
-        this->grid[i] = other.grid[i];
-    }
-    */
 
 }
 
@@ -110,7 +105,7 @@ std::ostream& operator<<(std::ostream& os, Board const& b){
 
     }
     
-    
+    return os;
 }
 
 int Board::count() const{

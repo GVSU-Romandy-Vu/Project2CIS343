@@ -90,11 +90,11 @@ void Game::placeShips(){
 			if(!valid){
 				std::cout<<"Invalid coordinates: both coordinates not 0-9 or direction not 0 or 1. \n"<<std::endl;
 			}
-			
-
-
 		}
+	
 	}
+
+
 }
 
 /**
@@ -106,7 +106,8 @@ void Game::placeShipsPC(){
 	Direction direction;
 	int calcDir;
 	std::default_random_engine generator;
-	std::uniform_int_distribution<int> distribution(0,WIDTH);
+	std::uniform_int_distribution<int> distribution(0, WIDTH);
+	
 	while(!ships.empty()){
 		Ship current = ships.front();
 		x = distribution(generator);
@@ -130,6 +131,7 @@ void Game::placeShipsPC(){
 			std::cout<<current.getName()<<" Has been removed"<<std::endl;
 		}
 	}
+	
 	ships = {Ship(5, "CARRIER", 'C'), Ship(4, "BATTLESHIP", 'B'), Ship(3, "DESTROYER", 'D'),
 	 Ship(3, "SUBMARINE", 'S'), Ship(2,"PATROL BOAT", 'P')};
 
@@ -259,6 +261,28 @@ void Game::humanTurn(){
 }
 
 void Game::computerTurn(){
+	std::default_random_engine generator;
+	std::uniform_int_distribution<int> distribution(0, WIDTH);
+	int x;
+	int y;
+	bool valid = false;
+	int target;
+	do{
+		x = distribution(generator);
+		y = distribution(generator);
+		target = player[x][y];
+
+	} while( HIT != target || MISS != target);
+
+	if(EMPTY == target){
+		player[x][y] = MISS;
+		std::cout<<"Computer missed."<<std::endl;
+	}
+	else{
+		player[x][y] = HIT;
+		std::cout<<"Computer hit a ship."<<std::endl;
+		
+	}
 }
 
 void Game::hello(){

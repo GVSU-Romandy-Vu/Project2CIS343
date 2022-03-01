@@ -17,6 +17,10 @@ Board::Board(){
     
     //set visibilty to false.
     visible = false;
+
+    for(int i = 0; i < WIDTH * HEIGHT; i++){
+    	grid[i] = 0;
+    }
 }
 
 Board::Board(const Board& other){
@@ -39,7 +43,7 @@ Board::Board(const Board& other){
 /**Set the reference/memory address of this board to "other board"
  * and return that reference.
  * Other is constant, so we can't swap it. */
-Board& Board::operator=(const Board& other){
+Board& Board::operator=(Board other){
 
     this->visible = other.visible;
 
@@ -47,17 +51,14 @@ Board& Board::operator=(const Board& other){
     this->grid = other.grid;
     return *this; */
 
-    //Copy each index from source.
-    for(int i = 0; i < WIDTH * HEIGHT; i++){
-    	grid[i] = other.grid[i];
-    }
+    std::swap(grid, other.grid);
 	    
    return *this;
 
 }
 
 Board::~Board(){
-    delete grid;
+    delete[] grid;
 }
 
 void Board::setVisible(bool v){

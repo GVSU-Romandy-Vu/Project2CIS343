@@ -37,7 +37,7 @@ void Game::beginGame(){
 	placeShipsPC();
 	
 	//Allow for player ship placement
-	placeShips();
+	//placeShips();
 	
 	//Cycle between player and computer hit placement.
 	run();
@@ -65,12 +65,12 @@ void Game::placeShips(){
 	Direction d;
 
 	//Done so all the ships are placed.
-	while (!ships.empty()){
+	for (int i = 0; i < ships.size(); i++){
 		//Prints player board of ships they already placed, if any.
 		std::cout<<player<<std::endl;
 
-		//Retrieve 1st ship in current list.
-		Ship current = ships.front();
+		//Retrieve ship in list.
+		Ship current = ships[i];
 
 		std::cout<<"Enter coordinates for "<<current<<std::endl;
 		
@@ -116,10 +116,9 @@ void Game::placeShips(){
 
 			//Condition if all inputs are valid.
 			if (row_valid && col_valid && dir_valid){
-				valid = true;
 				//Removes the ship placed from list.
 				if(place(std::stoi(row_data), std::stoi(col_data), d, current, player)){
-					ships.erase(ships.begin());
+					valid = true;
 				}
 
 			}
@@ -131,11 +130,6 @@ void Game::placeShips(){
 		}
 	
 	}
-	//Add all the ships so that once the player sinks a ship, a message is prompted.
-	ships = {Ship(5, "CARRIER", 'C'), Ship(4, "BATTLESHIP", 'B'), Ship(3, "DESTROYER", 'D'),
-         Ship(3, "SUBMARINE", 'S'), Ship(2,"PATROL BOAT", 'P')};
-
-
 
 }
 
@@ -146,6 +140,7 @@ void Game::placeShipsPC(){
 	//Used for parameters for place.
 	int x;
 	int y;
+	bool valid = false;
 	Direction direction;
 
 	//Calculates direction, currently modulo which makes it all vertical.
@@ -157,40 +152,40 @@ void Game::placeShipsPC(){
 	std::uniform_int_distribution<int> distribution(0, WIDTH - 1);
 	
 	//Loop until all ship is placed.
-	while(!ships.empty()){
+	for (int i = 0; i < ships.size(); i++){
 		//Get ship first in current list
-		Ship current = ships.front();
+		Ship current = ships[i];
+		valid = false;
 
-		//Generate random values and find direction.
-		x = distribution(generator);
-		y = distribution(generator);
-		int calcDir = (x + y) % 2;
-
-		//Set direction to something for place parameter.
-		if(0 == calcDir){
-			direction = HORIZONTAL;
-		}
-		else{
-			direction = VERTICAL;
-		}
-		
-		//Ensure that any ship part is not out of bounds.
-		while(x + current.getSpaces() >= WIDTH || y + current.getSpaces() >= HEIGHT){
+		while(!valid){
+			//Generate random values and find direction.
 			x = distribution(generator);
 			y = distribution(generator);
+			int calcDir = (x + y) % 2;
 
-		}
+			//Set direction to something for place parameter.
+			if(0 == calcDir){
+				direction = HORIZONTAL;
+			}
+			else{
+				direction = VERTICAL;
+			}
+		
+			//Ensure that any ship part is not out of bounds.
+			while(x + current.getSpaces() >= WIDTH || y + current.getSpaces() >= HEIGHT){
+				x = distribution(generator);
+				y = distribution(generator);
+
+			}
 
 		//Place ship into board and remove ship from list if successful.
 		if(place(x,y,direction, current, computer)){
-			ships.erase(ships.begin());
+			valid = true;
 		}
 	}
 	
-	//Adds all ships back to list to help method of player ship placement.
-	ships = {Ship(5, "CARRIER", 'C'), Ship(4, "BATTLESHIP", 'B'), Ship(3, "DESTROYER", 'D'),
-	 Ship(3, "SUBMARINE", 'S'), Ship(2,"PATROL BOAT", 'P')};
 
+	}
 }
 
 /**
@@ -286,9 +281,12 @@ void Game::run(){
 	if(player.count() == 17){
 		std::cout<<"You lose."<<std::endl;
 	}
+
+	ships.empty();
 }
 
 void Game::humanTurn(){
+	int j;
 	bool valid = false;
 	std::string row_data;
 	std::string col_data;
@@ -319,15 +317,13 @@ void Game::humanTurn(){
 			
 				int result = computer[row][col];
 
-				for (Ship ship: ships){
-					if(ship.getChr() == result){
+				for (int i = 0; i < ships.size(); i++){
+					if(ships[i].getChr() == result){
+						j = i;
 						std::cout<<"You hit a ship!\n"<<std::endl;
-						ship.addHit();
 						computer[row][col] = HIT;
-						std::cout<<"ship size: "<<ship.getSpaces()<<" Ship hits "<<ship.getHits()<<std::endl;
-						if(ship.getSpaces() == ship.getHits()){
-							std::cout<<"You sunk a "<<ship.getName()<<std::endl;
-						}
+						ships[i].addHit();
+						std::cout<<"ship size: "<<ships[i].getSpaces()<<" Ship hits "<<ships[i].getHits()<<std::endl;
 					}
 				}
 				if(EMPTY == result){
@@ -344,15 +340,13 @@ void Game::humanTurn(){
 			std::cout<<"Invalid coordinates, try again.\n"<<std::endl;
 			}
 		}
-		std::cout<<"Did not caught ship exception"<<std::endl;
 	}
 	catch(std::out_of_range& e){
 		std::cerr<<e.what()<<std::endl;
 		humanTurn();
 	}
 	catch(SunkShipException& w){
-		std::cout<<"Caught ship exception"<<std::endl;
-		std::cerr<<w.what()<<std::endl;
+		std::cout<<"You sunk a "<<ships[j].getName()<<std::endl;
 	}
 }
 

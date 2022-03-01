@@ -84,7 +84,7 @@ class Ship {
 		int spaces;
 
 		/**Field to hold how many times ship has been hit.*/
-		int hits;
+		int hits = 0;
 
 		/**Field to hold the ship's name.*/
 		std::string name;

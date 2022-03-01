@@ -35,7 +35,7 @@ class Board {
 		 * 
 		 * The Copy operator for Board class.
 		 * **************************************/
-		Board& operator=(const Board& other);
+		Board& operator=(Board other);
 
 		/*****************************************
 		 * 

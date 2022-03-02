@@ -111,7 +111,7 @@ std::ostream& operator<<(std::ostream& os, Board const& b){
 
             //Used to hide ship location of computer.
             if(!data.visible && (ch == CARRIER || ch == BATTLESHIP || ch == DESTROYER || ch == SUBMARINE || ch == PATROLBOAT)){
-                //ch = EMPTY;
+                ch = EMPTY;
             }
             //Print value of grid coordinates, unless hidden.
             std::cout<<ch<<"\t";

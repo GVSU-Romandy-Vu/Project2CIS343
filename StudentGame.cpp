@@ -37,7 +37,7 @@ void Game::beginGame(){
 	placeShipsPC();
 	
 	//Allow for player ship placement
-	//placeShips();
+	placeShips();
 	
 	//Cycle between player and computer hit placement.
 	run();
@@ -72,7 +72,6 @@ void Game::placeShips(){
 		//Retrieve ship in list.
 		Ship current = ships[i];
 
-		std::cout<<"Enter coordinates for "<<current<<std::endl;
 		
 		/*Set to false everytime as the previous ship placement is valid
 		* but current ship placement will not be.*/
@@ -80,6 +79,7 @@ void Game::placeShips(){
 		
 		//Done so each ship placement is valid.
 		while (!valid){
+			std::cout<<"Enter coordinates for "<<current<<std::endl;
 
 			/*Set to false for the same reason why "valid" is false. */
 			row_valid = false;
@@ -323,7 +323,6 @@ void Game::humanTurn(){
 						std::cout<<"You hit a ship!\n"<<std::endl;
 						computer[row][col] = HIT;
 						ships[i].addHit();
-						std::cout<<"ship size: "<<ships[i].getSpaces()<<" Ship hits "<<ships[i].getHits()<<std::endl;
 					}
 				}
 				if(EMPTY == result){
